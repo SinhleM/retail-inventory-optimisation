@@ -1,0 +1,5 @@
+# etl/requirements.txt
+pandas
+sqlalchemy
+psycopg2-binary
+Faker

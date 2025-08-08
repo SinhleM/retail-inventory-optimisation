@@ -1,0 +1,22 @@
+# .gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+
+# Docker
+.dockerignore
+
+# Data - Ignore the generated raw and processed data
+data/raw/
+data/processed/
+
+# Power BI temp files
+*.pbix.backup
+
+# IDE folders
+.vscode/
+.idea/
