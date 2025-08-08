@@ -1,6 +1,7 @@
 # etl/load.py
 import os
 from sqlalchemy import create_engine
+import pandas as pd
 
 def get_db_engine():
     """Creates a SQLAlchemy engine from environment variables."""
@@ -24,7 +25,7 @@ def load_data(transformed_data):
     transformed_data['dim_branch'].to_sql('dim_branch', engine, if_exists='append', index=False)
     transformed_data['dim_date'].to_sql('dim_date', engine, if_exists='append', index=False)
     print("  -> Loaded dimension tables.")
-
+ 
     # --- Prepare and Load Facts ---
     # We need to map business keys (e.g., product_id) to the new surrogate keys (product_key)
     
