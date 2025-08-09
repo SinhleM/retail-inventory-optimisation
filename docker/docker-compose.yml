@@ -9,7 +9,7 @@ services:
     container_name: postgres_db
     environment:
       POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: mynewsecret
       POSTGRES_DB: retail_dw
     volumes:
       # Mount the schema file to initialize the database
