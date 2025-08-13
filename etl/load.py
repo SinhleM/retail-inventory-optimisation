@@ -1,15 +1,24 @@
-# etl/load.py
 import os
 from sqlalchemy import create_engine, text # Import 'text' for raw SQL execution
 import pandas as pd
 
 def get_db_engine():
-    """Creates a SQLAlchemy engine from environment variables."""
-    user = os.getenv('DB_USER')
-    password = os.getenv('DB_PASSWORD')
-    host = os.getenv('DB_HOST')
-    port = os.getenv('DB_PORT')
-    dbname = os.getenv('DB_NAME')
+    """
+    Creates a SQLAlchemy engine for your local PostgreSQL database.
+    
+    IMPORTANT: Replace 'your_username', 'your_password', and 'your_dbname'
+    with your actual PostgreSQL credentials and database name.
+    The host is typically 'localhost' and port '5432' for a local setup.
+    """
+    # --- Configuration for your LOCAL PostgreSQL database ---
+    # Replace these placeholder values with your actual database credentials
+    user = "postgres"  # e.g., "postgres" or your custom user
+    password = "Admin1234" # e.g., "mysecretpassword"
+    host = "localhost"
+    port = "5432"
+    dbname = "retail_dw" # e.g., "retail_inventory" or the name you created in pgAdmin
+
+    print(f"Attempting to connect to PostgreSQL at {host}:{port}/{dbname} as user {user}...")
     return create_engine(f'postgresql://{user}:{password}@{host}:{port}/{dbname}')
 
 def load_data(transformed_data):
@@ -41,7 +50,7 @@ def load_data(transformed_data):
                 transformed_data['dim_product'].to_sql('dim_product', connection, if_exists='append', index=False)
                 transformed_data['dim_branch'].to_sql('dim_branch', connection, if_exists='append', index=False)
                 transformed_data['dim_date'].to_sql('dim_date', connection, if_exists='append', index=False)
-                print("  -> Loaded dimension tables.")
+                print("  -> Loaded dimension tables.")
 
                 # --- Prepare and Load Facts ---
                 # We need to map business keys (e.g., product_id) to the new surrogate keys (product_key)
@@ -56,7 +65,7 @@ def load_data(transformed_data):
                 # Ensure product_key and branch_key are not NaN after merge if there were mismatches
                 fact_sales = fact_sales[['date_key', 'product_key', 'branch_key', 'quantity_sold', 'sale_amount']]
                 fact_sales.to_sql('fact_sales', connection, if_exists='append', index=False)
-                print("  -> Loaded fact_sales.")
+                print("  -> Loaded fact_sales.")
 
                 # 2. Load Fact Inventory
                 fact_inventory = transformed_data['fact_inventory']
@@ -64,7 +73,7 @@ def load_data(transformed_data):
                 # Ensure product_key and branch_key are not NaN after merge if there were mismatches
                 fact_inventory = fact_inventory[['date_key', 'product_key', 'branch_key', 'stock_on_hand']]
                 fact_inventory.to_sql('fact_inventory', connection, if_exists='append', index=False)
-                print("  -> Loaded fact_inventory.")
+                print("  -> Loaded fact_inventory.")
 
                 transaction.commit() # Commit the transaction if everything succeeded
             except Exception as e:
