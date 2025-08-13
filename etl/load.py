@@ -24,7 +24,7 @@ def get_db_engine():
 def load_data(transformed_data):
     """
     Loads transformed dataframes into the PostgreSQL data warehouse.
-    This version truncates existing tables before loading to prevent duplicate key errors.
+    This version truncates existing tables before loading to prevent duplicate key errors..
     """
     print("Starting data loading...")
     engine = get_db_engine()
