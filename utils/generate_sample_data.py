@@ -6,8 +6,8 @@ from faker import Faker
 from datetime import datetime, timedelta
 import os
 
-# Initialize Faker
-fake = Faker()
+# Initialize Faker with South African locale
+fake = Faker('en_ZA')
 
 # --- Configuration ---
 NUM_PRODUCTS = 100
@@ -15,6 +15,15 @@ NUM_BRANCHES = 10
 START_DATE = datetime(2025, 7, 1)
 DAYS_OF_DATA = 45
 OUTPUT_DIR = '../data/raw'
+
+# Some typical South African categories (can customize further)
+PRODUCT_CATEGORIES = ['Electronics', 'Apparel', 'Groceries', 'Homeware', 'Toys', 'Automotive', 'Health']
+
+# Typical South African provinces for branch locations
+SA_PROVINCES = [
+    'Gauteng', 'Western Cape', 'KwaZulu-Natal', 'Eastern Cape', 'Limpopo',
+    'Mpumalanga', 'Northern Cape', 'Free State', 'North West'
+]
 
 # --- Ensure output directory exists ---
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -24,8 +33,8 @@ print("Generating product catalog...")
 products_data = {
     'product_id': range(1, NUM_PRODUCTS + 1),
     'product_name': [fake.word().capitalize() + ' ' + fake.word() for _ in range(NUM_PRODUCTS)],
-    'category': np.random.choice(['Electronics', 'Apparel', 'Groceries', 'Home Goods', 'Toys'], size=NUM_PRODUCTS),
-    'price': np.round(np.random.uniform(5.0, 500.0, size=NUM_PRODUCTS), 2)
+    'category': np.random.choice(PRODUCT_CATEGORIES, size=NUM_PRODUCTS),
+    'price': np.round(np.random.uniform(5.0, 5000.0, size=NUM_PRODUCTS), 2)  # adjusted price range for local context
 }
 df_products = pd.DataFrame(products_data)
 df_products.to_csv(f'{OUTPUT_DIR}/products.csv', index=False)
@@ -36,7 +45,7 @@ print("Generating branch information...")
 branches_data = {
     'branch_id': range(1, NUM_BRANCHES + 1),
     'branch_name': [f'Branch {fake.city()}' for _ in range(NUM_BRANCHES)],
-    'location': [fake.state() for _ in range(NUM_BRANCHES)]
+    'location': np.random.choice(SA_PROVINCES, size=NUM_BRANCHES)
 }
 df_branches = pd.DataFrame(branches_data)
 df_branches.to_csv(f'{OUTPUT_DIR}/branches.csv', index=False)
